@@ -118,20 +118,30 @@ int main(void)
   int count = 0;
   int frame = 0;
 
+  int im =0;
+  int rep = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1)
      {
+    	if(im==numImage){
+    		im =0;
+    	}
+    	if(rep == repeat[im]){
+    		im++;
+    		rep=0;
+    	}
     	// subframe finished, move onto next line
     	if(count >=16){
 			scan++;
 			count = 0;
 		}
     	// finished with animation, loop back
-		if(frame>=framesN*frameMod){
+		if(frame>=framesN[im]*frameMod[im]){
 			frame = 0;
+			rep++;
 		}
 
 		// last row, change frame and loop back
@@ -178,19 +188,19 @@ int main(void)
 
 		// brightness modulation
 		if(count>=8){
-			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[0+(frame/frameMod)*5][scan*4*3*2]), 24, 100);
+			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[im][0+(frame/frameMod[im])*5][scan*4*3*2]), 24, 100);
 		}
 		else if(count>=4){
-			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[1+(frame/frameMod)*5][scan*4*3*2]), 24, 100);
+			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[im][1+(frame/frameMod[im])*5][scan*4*3*2]), 24, 100);
 		}
 		else if(count>=2){
-			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[2+(frame/frameMod)*5][scan*4*3*2]), 24, 100);
+			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[im][2+(frame/frameMod[im])*5][scan*4*3*2]), 24, 100);
 		}
 		else if(count>=1){
-			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[3+(frame/frameMod)*5][scan*4*3*2]), 24, 100);
+			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[im][3+(frame/frameMod[im])*5][scan*4*3*2]), 24, 100);
 		}
 		else if(count==0){
-			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[4+(frame/frameMod)*5][scan*4*3*2]), 24, 100);
+			HAL_SPI_Transmit(&hspi1, (uint8_t *)&(image[im][4+(frame/frameMod[im])*5][scan*4*3*2]), 24, 100);
 		}
 
 		// OE low (LEDs on)
